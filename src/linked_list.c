@@ -18,6 +18,7 @@
 
 #include "linked_list.h"
 
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -141,4 +142,14 @@ LinkedList* initLinkedListFromArray(void** array, int length) {
     for (int i = 0; i < length; i++) { appendLinkedListElement(list, array[i]); }
 
     return list;
+}
+
+bool isElementInLinkedList(void* value, LinkedList* list) {
+    LinkedListNode* node = list->first;
+
+    while (node != NULL) {
+        if (node->value == value) { return true; }
+        node = node->next;
+    }
+    return false;
 }

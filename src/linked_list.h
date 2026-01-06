@@ -37,3 +37,4 @@ void* removeLinkedListElement(LinkedList* list, int index);
 void reverseLinkedList(LinkedList* list);
 void printLinkedList(LinkedList* list);
 LinkedList* initLinkedListFromArray(void** array, int length);
+bool isElementInLinkedList(void* value, LinkedList* list);
