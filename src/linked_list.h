@@ -31,5 +31,8 @@ typedef struct LinkedList {
 LinkedList* initLinkedList();
 void freeLinkedList(LinkedList* list);
 void addLinkedListElement(LinkedList* list, int index, void* value);
-LinkedListNode* getLinkedListElement(LinkedList* list, int index);
+void appendLinkedListElement(LinkedList *list, void *value);
+LinkedListNode *getLinkedListElement(LinkedList *list, int index);
 void* removeLinkedListElement(LinkedList* list, int index);
+void reverseLinkedList(LinkedList *list);
+void printLinkedList(LinkedList *list);

@@ -21,113 +21,129 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-LinkedList *initLinkedList()
-{
-    LinkedList *list = malloc(1 * sizeof(LinkedList));
-    list->length = 0;
-    list->first = NULL;
-    list->last = NULL;
-    return list;
+LinkedList *initLinkedList() {
+  LinkedList *list = malloc(1 * sizeof(LinkedList));
+  list->length = 0;
+  list->first = NULL;
+  list->last = NULL;
+  return list;
 };
 
-void freeLinkedList(LinkedList *list)
-{
-    while (list->length > 0)
-    {
-        removeLinkedListElement(list, 0);
-    }
+void freeLinkedList(LinkedList *list) {
+  while (list->length > 0) {
+    removeLinkedListElement(list, 0);
+  }
 
-    free(list);
+  free(list);
 }
 
-void addLinkedListElement(LinkedList *list, int index, void *value)
-{
-    LinkedListNode *node = malloc(1 * sizeof(LinkedListNode));
-    node->value = value;
+void addLinkedListElement(LinkedList *list, int index, void *value) {
+  LinkedListNode *node = malloc(1 * sizeof(LinkedListNode));
+  node->value = value;
 
-    if (index == list->length)
-    {
-        list->last = node;
-        node->next = NULL;
-    }
-    else
-    {
-        // Attach to next node
-        node->next = getLinkedListElement(list, index);
-        node->next->previous = node;
-    }
+  if (index == list->length) {
+    list->last = node;
+    node->next = NULL;
+  } else {
+    // Attach to next node
+    node->next = getLinkedListElement(list, index);
+    node->next->previous = node;
+  }
 
-    if (index == 0)
-    {
-        list->first = node;
-        node->previous = NULL;
-    }
-    else
-    {
-        // Attach to previous node
-        node->previous = getLinkedListElement(list, index - 1);
-        node->previous->next = node;
-    }
+  if (index == 0) {
+    list->first = node;
+    node->previous = NULL;
+  } else {
+    // Attach to previous node
+    node->previous = getLinkedListElement(list, index - 1);
+    node->previous->next = node;
+  }
 
-    list->length++;
+  list->length++;
 }
 
-LinkedListNode *getLinkedListElement(LinkedList *list, int index)
-{
-    LinkedListNode *node = list->first;
-
-    if (index >= list->length || index < 0)
-    {
-        fprintf(stderr, "Error: Index out of range: Invalid index %d for list of size %d\n", index, list->length);
-        exit(1);
-    }
-
-    for (int i = 0; i < index; i++)
-    {
-        if (node->next == NULL)
-        {
-            fprintf(stderr, "Error: LinkedList length mismatch\n");
-            exit(1);
-        }
-        node = node->next;
-    }
-
-    return node;
+void appendLinkedListElement(LinkedList* list, void* value) {
+  addLinkedListElement(list, list->length, value);
 }
 
-void *removeLinkedListElement(LinkedList *list, int index)
-{
-    LinkedListNode *nodeToRemove = getLinkedListElement(list, index);
+LinkedListNode *getLinkedListElement(LinkedList *list, int index) {
+  LinkedListNode *node = list->first;
 
-    // If node to remove is the first node, update list header
-    if (index == 0)
-    {
-        list->first = nodeToRemove->next;
+  if (index >= list->length || index < 0) {
+    fprintf(stderr,
+            "Error: Index out of range: Invalid index %d for list of size %d\n",
+            index, list->length);
+    exit(1);
+  }
+
+  for (int i = 0; i < index; i++) {
+    if (node->next == NULL) {
+      fprintf(stderr, "Error: LinkedList length mismatch\n");
+      exit(1);
     }
+    node = node->next;
+  }
 
-    // If node to remove is the last node, update list header
-    if (index == list->length - 1)
-    {
-        list->last = nodeToRemove->previous;
+  return node;
+}
+
+void *removeLinkedListElement(LinkedList *list, int index) {
+  LinkedListNode *nodeToRemove = getLinkedListElement(list, index);
+
+  // If node to remove is the first node, update list header
+  if (index == 0) {
+    list->first = nodeToRemove->next;
+  }
+
+  // If node to remove is the last node, update list header
+  if (index == list->length - 1) {
+    list->last = nodeToRemove->previous;
+  }
+
+  // Remove link with previous node
+  if (nodeToRemove->previous != NULL) {
+    nodeToRemove->previous->next = nodeToRemove->next;
+  }
+
+  // Remove link with next node
+  if (nodeToRemove->next != NULL) {
+    nodeToRemove->next->previous = nodeToRemove->previous;
+  }
+
+  list->length--;
+
+  // Remember value to return
+  void *value = nodeToRemove->value;
+
+  free(nodeToRemove);
+  return value;
+}
+
+void reverseLinkedList(LinkedList *list) {
+  LinkedListNode *node = list->first;
+  LinkedListNode *temp;
+  for (int i = 0; i < list->length; i++) {
+    if (node == NULL) {
+      fprintf(stderr, "Error: LinkedList length mismatch\n");
+      exit(1);
     }
+    temp = node->next;
+    node->next = node->previous;
+    node->previous = temp;
 
-    // Remove link with previous node
-    if (nodeToRemove->previous != NULL)
-    {
-        nodeToRemove->previous->next = nodeToRemove->next;
-    }
+    node = node->previous; // order is reversed, so previous = next
+  }
 
-    // Remove link with next node
-    if (nodeToRemove->next != NULL)
-    {
-        nodeToRemove->next->previous = nodeToRemove->previous;
-    }
+  temp = list->first;
+  list->first = list->last;
+  list->last = temp;
+}
 
-    list->length--;
-
-    // Remember value to return
-    void *value = nodeToRemove->value;
-
-    free(nodeToRemove);
-    return value;
+void printLinkedList(LinkedList *list) {
+  LinkedListNode *node = list->first;
+  while (node != NULL) {
+    printf("%p\n", node->value);
+    node = node->next;
+  }
+  printf("\n");
 }

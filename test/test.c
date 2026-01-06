@@ -12,12 +12,21 @@
 int main () {
     LinkedList* a = initLinkedList();
 
-    addLinkedListElement(a, 0, NULL);
-    addLinkedListElement(a, 1, NULL);
-    addLinkedListElement(a, 1, NULL);
-    addLinkedListElement(a, 3, NULL);
-    addLinkedListElement(a, 0, NULL);
-    removeLinkedListElement(a, 3);
+    
+    addLinkedListElement(a, 0, (void*) 1);
+    addLinkedListElement(a, 0, (void*) 2);
+    
+    printLinkedList(a);
+
+    addLinkedListElement(a, 0, (void*) 3);
+    addLinkedListElement(a, 0, (void*) 4);
+    addLinkedListElement(a, 0, (void*) 5);
+    
+    printLinkedList(a);
+
+    reverseLinkedList(a);
+
+    printLinkedList(a);
 
     freeLinkedList(a);
 
