@@ -135,3 +135,10 @@ void printLinkedList(LinkedList* list) {
     }
     printf("\n");
 }
+
+LinkedList* initLinkedListFromArray(void** array, int length) {
+    LinkedList* list = initLinkedList();
+    for (int i = 0; i < length; i++) { appendLinkedListElement(list, array[i]); }
+
+    return list;
+}
