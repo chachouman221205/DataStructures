@@ -40,25 +40,38 @@ void addLinkedListElement(LinkedList* list, int index, void* value) {
     LinkedListNode* node = malloc(1 * sizeof(LinkedListNode));
     node->value = value;
 
+    // find neighboring nodes
     if (index == list->length) {
-        list->last = node;
-        node->next = NULL;
+        node->previous = list->last;
     } else {
-        // Attach to next node
-        node->next = getLinkedListElement(list, index);
-        node->next->previous = node;
+        node->previous = getLinkedListElement(list, index - 1);
     }
 
     if (index == 0) {
-        list->first = node;
-        node->previous = NULL;
+        node->next = list->first;
     } else {
-        // Attach to previous node
-        node->previous = getLinkedListElement(list, index - 1);
-        node->previous->next = node;
+        if (node->previous !=  NULL) {
+            node->next = node->previous->next;
+        } else {
+            
+        }
     }
 
     list->length++;
+
+
+    // Attach to adjacent nodes and header
+    if (node->next != NULL) {
+        node->next->previous = node;
+    } else {
+        list->last = node;
+    }
+
+    if (node->previous != NULL) {
+        node->previous->next = node;
+    } else {
+        list->first = node;
+    }
 }
 
 void appendLinkedListElement(LinkedList* list, void* value) {
@@ -66,19 +79,31 @@ void appendLinkedListElement(LinkedList* list, void* value) {
 }
 
 LinkedListNode* getLinkedListElement(LinkedList* list, int index) {
-    LinkedListNode* node = list->first;
+    LinkedListNode* node;
 
     if (index >= list->length || index < 0) {
         fprintf(stderr, "Error: Index out of range: Invalid index %d for list of size %d\n", index, list->length);
         exit(1);
     }
 
-    for (int i = 0; i < index; i++) {
-        if (node->next == NULL) {
-            fprintf(stderr, "Error: LinkedList length mismatch\n");
-            exit(1);
+    if (index <= (list->length) >> 1) {
+        node = list->first;
+        for (int i = 0; i < index; i++) {
+            if (node->next == NULL) {
+                fprintf(stderr, "Error: LinkedList length mismatch\n");
+                exit(1);
+            }
+            node = node->next;
         }
-        node = node->next;
+    } else {
+        node = list->last;
+        for (int i = list->length; i >= index; i--) {
+            if (node->previous == NULL) {
+                fprintf(stderr, "Error: LinkedList length mismatch\n");
+                exit(1);
+            }
+            node = node->previous;
+        }
     }
 
     return node;
